@@ -32,7 +32,6 @@ const express_1 = __importDefault(require("express"));
 const db_config_1 = require("./config/db.config");
 //rotas
 const user_route_1 = __importDefault(require("./routes/user.route"));
-const admin_route_1 = __importDefault(require("./routes/admin.route"));
 const cloudinary_route_1 = __importDefault(require("./routes/cloudinary.route"));
 const question_route_1 = __importDefault(require("./routes/question.route"));
 const app = (0, express_1.default)();
@@ -45,7 +44,6 @@ app.get("/", (req, res) => {
 });
 //rotas
 app.use("/user", user_route_1.default);
-app.use("/admin", admin_route_1.default);
 app.use("/cloudinary", cloudinary_route_1.default);
 app.use("/question", question_route_1.default);
 //conectar com db primeiro depois subir o servidor

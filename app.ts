@@ -4,7 +4,6 @@ import express, { Express, Response, Request } from "express";
 import { connectToDB } from "./config/db.config";
 //rotas
 import userRouter from "./routes/user.route";
-import adminRouter from "./routes/admin.route";
 import cloudinaryRouter from "./routes/cloudinary.route";
 import questionRouter from "./routes/question.route";
 
@@ -22,7 +21,6 @@ app.get("/", (req: Request, res: Response) => {
 
 //rotas
 app.use("/user", userRouter);
-app.use("/admin", adminRouter);
 app.use("/cloudinary", cloudinaryRouter);
 app.use("/question", questionRouter);
 

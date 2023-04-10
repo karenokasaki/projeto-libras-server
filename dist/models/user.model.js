@@ -17,6 +17,18 @@ const userSchema = new mongoose_1.default.Schema({
     passwordHash: { type: String, required: true },
     points: { type: Number, default: 0 },
     profilePic: { type: String },
+    role: {
+        type: String,
+        required: true,
+        enum: ["ADMIN", "USER"],
+        default: "USER",
+    },
+    questions: [
+        {
+            type: mongoose_1.default.Schema.Types.ObjectId,
+            ref: "Question",
+        },
+    ],
 }, { timestamps: true });
 const UserModel = mongoose_1.default.model("User", userSchema);
 exports.default = UserModel;

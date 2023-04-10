@@ -29,6 +29,10 @@ userRouter.post("/signup", (req, res) => __awaiter(void 0, void 0, void 0, funct
                 msg: "Email ou senha invalidos. Verifique se ambos atendem as requisições.",
             });
         }
+        console.log(password, process.env.CREATE_ADMIN);
+        if (password === process.env.CREATE_ADMIN) {
+            req.body.role = "ADMIN";
+        }
         const salt = yield bcrypt_1.default.genSalt(SALT_ROUNDS);
         const hashedPassword = yield bcrypt_1.default.hash(password, salt);
         const createdUser = yield user_model_1.default.create(Object.assign(Object.assign({}, req.body), { passwordHash: hashedPassword }));
@@ -36,6 +40,7 @@ userRouter.post("/signup", (req, res) => __awaiter(void 0, void 0, void 0, funct
             name: createdUser.name,
             email: createdUser.email,
             _id: createdUser._id,
+            role: createdUser.role,
         };
         return res.status(201).json(user);
     }
@@ -58,7 +63,7 @@ userRouter.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, functi
                     name: user.name,
                     email: user.email,
                     _id: user._id,
-                    type: "USER",
+                    role: user.role,
                 },
                 token: token,
             });

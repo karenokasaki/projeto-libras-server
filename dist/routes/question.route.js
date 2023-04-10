@@ -14,10 +14,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const question_model_1 = __importDefault(require("../models/question.model"));
-const admin_model_1 = __importDefault(require("../models/admin.model"));
 const isAuth_1 = __importDefault(require("../middlewares/isAuth"));
 const isAdmin_1 = require("../middlewares/isAdmin");
 const attachCurrentUser_1 = __importDefault(require("../middlewares/attachCurrentUser"));
+const user_model_1 = __importDefault(require("../models/user.model"));
 const QuestionRouter = express_1.default.Router();
 /* ONLY ADMIN */
 // CREATE
@@ -29,12 +29,12 @@ QuestionRouter.post("/create", isAuth_1.default, attachCurrentUser_1.default, is
         // cria a pergunta
         const question = yield question_model_1.default.create(Object.assign({ createdBy: req.currentUser._id }, req.body));
         // faz o push da pergunta criada para a array de perguntas do admin
-        const admin = yield admin_model_1.default.findById(req.currentUser._id);
-        if (!admin) {
+        const userAdmin = yield user_model_1.default.findById(req.currentUser._id);
+        if (!userAdmin) {
             return res.status(404).json({ msg: "Admin não encontrado" });
         }
-        admin.questions.push(question._id);
-        yield admin.save();
+        userAdmin.questions.push(question._id);
+        yield userAdmin.save();
         return res.status(201).json(question);
     }
     catch (err) {

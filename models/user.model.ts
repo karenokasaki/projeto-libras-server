@@ -15,6 +15,19 @@ const userSchema = new mongoose.Schema<UserDoc>(
     passwordHash: { type: String, required: true },
     points: { type: Number, default: 0 },
     profilePic: { type: String },
+    role: {
+      type: String,
+      required: true,
+      enum: ["ADMIN", "USER"],
+      default: "USER",
+    },
+
+    questions: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Question",
+      },
+    ],
   },
   { timestamps: true }
 );

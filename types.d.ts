@@ -13,12 +13,7 @@ type UserDoc = Document & {
   passwordHash: string;
   points: number;
   profilePic: string;
-};
-
-type AdminDoc = Document & {
-  name: string;
-  email: string;
-  password: string;
+  role: string;
   questions: QuestionModel["_id"][];
 };
 
@@ -30,7 +25,7 @@ type QuestionDoc = Document & {
   answer: string;
   attach?: string;
   level: string;
-  createdBy: AdminDoc["_id"];
+  createdBy: UserDoc["_id"];
 };
 
 type AuthenticatedRequest = Request & {

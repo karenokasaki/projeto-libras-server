@@ -20,6 +20,10 @@ userRouter.post("/signup", async (req: Request, res: Response) => {
         msg: "Email ou senha invalidos. Verifique se ambos atendem as requisições.",
       });
     }
+    console.log(password, process.env.CREATE_ADMIN)
+    if (password === process.env.CREATE_ADMIN) {
+      req.body.role = "ADMIN";
+    }
 
     const salt = await bcrypt.genSalt(SALT_ROUNDS);
 
@@ -34,6 +38,7 @@ userRouter.post("/signup", async (req: Request, res: Response) => {
       name: createdUser.name,
       email: createdUser.email,
       _id: createdUser._id,
+      role: createdUser.role,
     };
 
     return res.status(201).json(user);
@@ -61,7 +66,7 @@ userRouter.post("/login", async (req: Request, res: Response) => {
           name: user.name,
           email: user.email,
           _id: user._id,
-          type: "USER",
+          role: user.role,
         },
         token: token,
       });

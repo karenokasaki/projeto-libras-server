@@ -14,15 +14,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isAdmin = void 0;
-const admin_model_1 = __importDefault(require("../models/admin.model"));
+const user_model_1 = __importDefault(require("../models/user.model"));
 function isAdmin(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             if (!req.currentUser) {
                 return res.status(401).json({ msg: "User not logged in." });
             }
-            const admin = yield admin_model_1.default.findById(req.currentUser._id);
-            if (!admin) {
+            const userAdmin = yield user_model_1.default.findById(req.currentUser._id);
+            if (!userAdmin) {
+                return res.status(404).json({ msg: "User not found." });
+            }
+            if (userAdmin.role !== "ADMIN") {
                 return res.status(401).json({ msg: "User unauthorized." });
             }
             next();

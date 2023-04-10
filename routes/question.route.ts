@@ -1,10 +1,10 @@
 import express, { Response } from "express";
 import QuestionModel from "../models/question.model";
-import AdminModel from "../models/admin.model";
 import isAuth from "../middlewares/isAuth";
 import { isAdmin } from "../middlewares/isAdmin";
 import { AuthenticatedRequest } from "../types";
 import attachCurrentUser from "../middlewares/attachCurrentUser";
+import UserModel from "../models/user.model";
 
 const QuestionRouter = express.Router();
 
@@ -28,12 +28,12 @@ QuestionRouter.post(
       });
 
       // faz o push da pergunta criada para a array de perguntas do admin
-      const admin = await AdminModel.findById(req.currentUser._id);
-      if (!admin) {
+      const userAdmin = await UserModel.findById(req.currentUser._id);
+      if (!userAdmin) {
         return res.status(404).json({ msg: "Admin não encontrado" });
       }
-      admin.questions.push(question._id);
-      await admin.save();
+      userAdmin.questions.push(question._id);
+      await userAdmin.save();
 
       return res.status(201).json(question);
     } catch (err) {
