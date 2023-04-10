@@ -1,8 +1,20 @@
 //todo add type for user
 
-export async function isAdmin(req: any, res: any, next: any) {
+import { NextFunction, Response } from "express";
+import AdminModel from "../models/admin.model";
+import { AuthenticatedRequest } from "../types";
+
+export async function isAdmin(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) {
   try {
-    if (req.currentUser.role !== "ADMIN") {
+    if (!req.currentUser) {
+      return res.status(401).json({ msg: "User not logged in." });
+    }
+    const admin = await AdminModel.findById(req.currentUser._id);
+    if (!admin) {
       return res.status(401).json({ msg: "User unauthorized." });
     }
 

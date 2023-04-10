@@ -9,12 +9,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isAdmin = void 0;
+const admin_model_1 = __importDefault(require("../models/admin.model"));
 function isAdmin(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            if (req.currentUser.role !== "ADMIN") {
+            if (!req.currentUser) {
+                return res.status(401).json({ msg: "User not logged in." });
+            }
+            const admin = yield admin_model_1.default.findById(req.currentUser._id);
+            if (!admin) {
                 return res.status(401).json({ msg: "User unauthorized." });
             }
             next();

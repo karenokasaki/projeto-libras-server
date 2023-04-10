@@ -2,10 +2,11 @@ import express, { Request, Response } from "express";
 import { generateToken } from "../config/jwt.config";
 import isAuth from "../middlewares/isAuth";
 import attachCurrentUser from "../middlewares/attachCurrentUser";
-import { isAdmin } from "../middlewares/isAdmin";
 import UserModel from "../models/user.model";
 
 import bcrypt from "bcrypt";
+import AdminModel from "../models/admin.model";
+import { AuthenticatedRequest } from "../types";
 
 const SALT_ROUNDS = 10;
 
@@ -26,15 +27,15 @@ adminRouter.post("/signup", async (req: Request, res: Response) => {
 
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const createdUser = await UserModel.create({
+    const createdAdmin = await AdminModel.create({
       ...req.body,
       passwordHash: hashedPassword,
     });
 
     const user = {
-      name: createdUser.name,
-      email: createdUser.email,
-      _id: createdUser._id,
+      name: createdAdmin.name,
+      email: createdAdmin.email,
+      _id: createdAdmin._id,
     };
 
     return res.status(201).json(user);
@@ -73,5 +74,23 @@ adminRouter.post("/login", async (req: Request, res: Response) => {
     return res.status(500).json(err);
   }
 });
+
+adminRouter.get(
+  "/me",
+  isAuth,
+  attachCurrentUser,
+  async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      if (!req.currentUser) {
+        return res.status(401).json({ msg: "Você não está autenticado" });
+      }
+      const user = req.currentUser;
+      return res.status(200).json(user);
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json(err);
+    }
+  }
+);
 
 export default adminRouter;

@@ -14,8 +14,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const jwt_config_1 = require("../config/jwt.config");
+const isAuth_1 = __importDefault(require("../middlewares/isAuth"));
+const attachCurrentUser_1 = __importDefault(require("../middlewares/attachCurrentUser"));
 const user_model_1 = __importDefault(require("../models/user.model"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const admin_model_1 = __importDefault(require("../models/admin.model"));
 const SALT_ROUNDS = 10;
 const adminRouter = express_1.default.Router();
 adminRouter.post("/signup", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -29,11 +32,11 @@ adminRouter.post("/signup", (req, res) => __awaiter(void 0, void 0, void 0, func
         }
         const salt = yield bcrypt_1.default.genSalt(SALT_ROUNDS);
         const hashedPassword = yield bcrypt_1.default.hash(password, salt);
-        const createdUser = yield user_model_1.default.create(Object.assign(Object.assign({}, req.body), { passwordHash: hashedPassword }));
+        const createdAdmin = yield admin_model_1.default.create(Object.assign(Object.assign({}, req.body), { passwordHash: hashedPassword }));
         const user = {
-            name: createdUser.name,
-            email: createdUser.email,
-            _id: createdUser._id,
+            name: createdAdmin.name,
+            email: createdAdmin.email,
+            _id: createdAdmin._id,
         };
         return res.status(201).json(user);
     }
@@ -63,6 +66,19 @@ adminRouter.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, funct
         else {
             return res.status(401).json({ msg: "Email ou senha invalidos." });
         }
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(500).json(err);
+    }
+}));
+adminRouter.get("/me", isAuth_1.default, attachCurrentUser_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (!req.currentUser) {
+            return res.status(401).json({ msg: "Você não está autenticado" });
+        }
+        const user = req.currentUser;
+        return res.status(200).json(user);
     }
     catch (err) {
         console.log(err);
