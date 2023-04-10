@@ -19,9 +19,9 @@ const isAuth_1 = __importDefault(require("../middlewares/isAuth"));
 const isAdmin_1 = require("../middlewares/isAdmin");
 const attachCurrentUser_1 = __importDefault(require("../middlewares/attachCurrentUser"));
 const QuestionRouter = express_1.default.Router();
-/* ADMIN */
+/* ONLY ADMIN */
 // CREATE
-QuestionRouter.post("/", isAuth_1.default, isAdmin_1.isAdmin, attachCurrentUser_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+QuestionRouter.post("/create", isAuth_1.default, attachCurrentUser_1.default, isAdmin_1.isAdmin, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (!req.currentUser) {
             return res.status(401).json({ msg: "Não autorizado" });
@@ -43,7 +43,7 @@ QuestionRouter.post("/", isAuth_1.default, isAdmin_1.isAdmin, attachCurrentUser_
     }
 }));
 // UPDATE
-QuestionRouter.put("/:id", isAuth_1.default, isAdmin_1.isAdmin, attachCurrentUser_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+QuestionRouter.put("/:id", isAuth_1.default, attachCurrentUser_1.default, isAdmin_1.isAdmin, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const question = yield question_model_1.default.findByIdAndUpdate(req.params.id, Object.assign({}, req.body), {
             new: true,
@@ -60,7 +60,7 @@ QuestionRouter.put("/:id", isAuth_1.default, isAdmin_1.isAdmin, attachCurrentUse
     }
 }));
 // DELETE
-QuestionRouter.delete("/:id", isAuth_1.default, isAdmin_1.isAdmin, attachCurrentUser_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+QuestionRouter.delete("/:id", isAuth_1.default, attachCurrentUser_1.default, isAdmin_1.isAdmin, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const question = yield question_model_1.default.findByIdAndDelete(req.params.id);
         if (!question) {

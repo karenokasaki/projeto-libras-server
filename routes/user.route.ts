@@ -2,10 +2,9 @@ import express, { Request, Response } from "express";
 import { generateToken } from "../config/jwt.config";
 import isAuth from "../middlewares/isAuth";
 import attachCurrentUser from "../middlewares/attachCurrentUser";
-import { isAdmin } from "../middlewares/isAdmin";
 import UserModel from "../models/user.model";
-
 import bcrypt from "bcrypt";
+import { AuthenticatedRequest, UserDoc } from "../types";
 
 const SALT_ROUNDS = 10;
 
@@ -73,5 +72,95 @@ userRouter.post("/login", async (req: Request, res: Response) => {
     return res.status(500).json(err);
   }
 });
+
+userRouter.get(
+  "/profile",
+  isAuth,
+  attachCurrentUser,
+  async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      if (!req.currentUser) {
+        return res.status(401).json({ msg: "Usuário não autenticado." });
+      }
+      const user: UserDoc = req.currentUser;
+
+      if (!user) {
+        return res
+          .status(404)
+          .json({ msg: "Usuário não encontrado.", ok: false });
+      }
+
+      return res.status(200).json(user);
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json(err);
+    }
+  }
+);
+
+//update
+userRouter.put(
+  "/profile",
+  isAuth,
+  attachCurrentUser,
+  async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      if (!req.currentUser) {
+        return res
+          .status(401)
+          .json({ msg: "Usuário não autenticado.", ok: false });
+      }
+
+      const updatedUser = await UserModel.findByIdAndUpdate(
+        req.currentUser._id,
+        { ...req.body },
+        { new: true }
+      );
+
+      if (!updatedUser) {
+        return res
+          .status(404)
+          .json({ msg: "Usuário não encontrado.", ok: false });
+      }
+
+      return res.status(200).json(updatedUser);
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json(err);
+    }
+  }
+);
+
+//delete user
+userRouter.delete(
+  "/profile",
+  isAuth,
+  attachCurrentUser,
+  async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      if (!req.currentUser) {
+        return res
+          .status(401)
+          .json({ msg: "Usuário não autenticado.", ok: false });
+      }
+      const deletedUser = await UserModel.findByIdAndDelete(
+        req.currentUser._id
+      );
+
+      if (!deletedUser) {
+        return res
+          .status(404)
+          .json({ msg: "Usuário não encontrado.", ok: false });
+      }
+
+      return res
+        .status(200)
+        .json({ ok: true, msg: "Usuário deletado com sucesso" });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json(err);
+    }
+  }
+);
 
 export default userRouter;

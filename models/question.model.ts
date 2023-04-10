@@ -3,7 +3,19 @@ import type { QuestionDoc } from "../types";
 
 const questionSchema = new mongoose.Schema<QuestionDoc>(
   {
-    type: { type: String, required: true },
+    type: {
+      type: String,
+      required: true,
+      enum: [
+        "monte a palavra",
+        "clique na imagem",
+        "complete a palavra",
+        "escolha a frase",
+        "escreva a frase",
+        "complete a frase",
+        "clique no video",
+      ],
+    },
     heading: { type: String, required: true },
     questions: { type: String, required: true },
     options: [{ type: String, required: true }],

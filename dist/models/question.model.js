@@ -5,7 +5,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const questionSchema = new mongoose_1.default.Schema({
-    type: { type: String, required: true },
+    type: {
+        type: String,
+        required: true,
+        enum: [
+            "monte a palavra",
+            "clique na imagem",
+            "complete a palavra",
+            "escolha a frase",
+            "escreva a frase",
+            "complete a frase",
+            "clique no video",
+        ],
+    },
     heading: { type: String, required: true },
     questions: { type: String, required: true },
     options: [{ type: String, required: true }],

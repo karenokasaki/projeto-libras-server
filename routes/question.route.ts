@@ -8,13 +8,14 @@ import attachCurrentUser from "../middlewares/attachCurrentUser";
 
 const QuestionRouter = express.Router();
 
-/* ADMIN */
+/* ONLY ADMIN */
+
 // CREATE
 QuestionRouter.post(
-  "/",
+  "/create",
   isAuth,
-  isAdmin,
   attachCurrentUser,
+  isAdmin,
   async (req: AuthenticatedRequest, res: Response) => {
     try {
       if (!req.currentUser) {
@@ -46,8 +47,8 @@ QuestionRouter.post(
 QuestionRouter.put(
   "/:id",
   isAuth,
-  isAdmin,
   attachCurrentUser,
+  isAdmin,
   async (req: AuthenticatedRequest, res: Response) => {
     try {
       const question = await QuestionModel.findByIdAndUpdate(
@@ -73,8 +74,8 @@ QuestionRouter.put(
 QuestionRouter.delete(
   "/:id",
   isAuth,
-  isAdmin,
   attachCurrentUser,
+  isAdmin,
   async (req: AuthenticatedRequest, res: Response) => {
     try {
       const question = await QuestionModel.findByIdAndDelete(req.params.id);

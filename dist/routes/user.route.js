@@ -14,6 +14,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const jwt_config_1 = require("../config/jwt.config");
+const isAuth_1 = __importDefault(require("../middlewares/isAuth"));
+const attachCurrentUser_1 = __importDefault(require("../middlewares/attachCurrentUser"));
 const user_model_1 = __importDefault(require("../models/user.model"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const SALT_ROUNDS = 10;
@@ -63,6 +65,68 @@ userRouter.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, functi
         else {
             return res.status(401).json({ msg: "Email ou senha invalidos." });
         }
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(500).json(err);
+    }
+}));
+userRouter.get("/profile", isAuth_1.default, attachCurrentUser_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (!req.currentUser) {
+            return res.status(401).json({ msg: "Usuário não autenticado." });
+        }
+        const user = req.currentUser;
+        if (!user) {
+            return res
+                .status(404)
+                .json({ msg: "Usuário não encontrado.", ok: false });
+        }
+        return res.status(200).json(user);
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(500).json(err);
+    }
+}));
+//update
+userRouter.put("/profile", isAuth_1.default, attachCurrentUser_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (!req.currentUser) {
+            return res
+                .status(401)
+                .json({ msg: "Usuário não autenticado.", ok: false });
+        }
+        const updatedUser = yield user_model_1.default.findByIdAndUpdate(req.currentUser._id, Object.assign({}, req.body), { new: true });
+        if (!updatedUser) {
+            return res
+                .status(404)
+                .json({ msg: "Usuário não encontrado.", ok: false });
+        }
+        return res.status(200).json(updatedUser);
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(500).json(err);
+    }
+}));
+//delete user
+userRouter.delete("/profile", isAuth_1.default, attachCurrentUser_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (!req.currentUser) {
+            return res
+                .status(401)
+                .json({ msg: "Usuário não autenticado.", ok: false });
+        }
+        const deletedUser = yield user_model_1.default.findByIdAndDelete(req.currentUser._id);
+        if (!deletedUser) {
+            return res
+                .status(404)
+                .json({ msg: "Usuário não encontrado.", ok: false });
+        }
+        return res
+            .status(200)
+            .json({ ok: true, msg: "Usuário deletado com sucesso" });
     }
     catch (err) {
         console.log(err);
