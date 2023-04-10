@@ -63,6 +63,7 @@ adminRouter.post("/login", async (req: Request, res: Response) => {
           name: user.name,
           email: user.email,
           _id: user._id,
+          type: "ADMIN",
         },
         token: token,
       });

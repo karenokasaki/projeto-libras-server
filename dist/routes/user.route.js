@@ -58,6 +58,7 @@ userRouter.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, functi
                     name: user.name,
                     email: user.email,
                     _id: user._id,
+                    type: "USER",
                 },
                 token: token,
             });

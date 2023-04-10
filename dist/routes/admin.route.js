@@ -59,6 +59,7 @@ adminRouter.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, funct
                     name: user.name,
                     email: user.email,
                     _id: user._id,
+                    type: "ADMIN",
                 },
                 token: token,
             });

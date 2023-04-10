@@ -12,16 +12,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const admin_model_1 = __importDefault(require("../models/admin.model"));
 const user_model_1 = __importDefault(require("../models/user.model"));
 function attachCurrentUser(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const userData = req.auth;
-            const user = yield user_model_1.default.findOne({ _id: userData._id }, { passwordHash: 0 });
-            if (!user) {
-                return res.status(404).json({ msg: "User not found." });
+            if (userData.type === "USER") {
+                const user = yield user_model_1.default.findOne({ _id: userData._id }, { passwordHash: 0 });
+                if (!user) {
+                    return res.status(404).json({ msg: "User not found." });
+                }
+                req.currentUser = user;
             }
-            req.currentUser = user;
+            if (userData.type === "ADMIN") {
+                const admin = yield admin_model_1.default.findOne({ _id: userData._id }, { passwordHash: 0 });
+                if (!admin) {
+                    return res.status(404).json({ msg: "Admin not found." });
+                }
+                req.currentUser = admin;
+            }
             next();
         }
         catch (err) {
