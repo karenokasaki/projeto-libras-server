@@ -15,6 +15,11 @@ app.use(express.json());
 
 dotenv.config();
 
+//teste
+app.get("/", (req: Request, res: Response) => {
+  res.send("Hello World!");
+});
+
 //rotas
 app.use("/user", userRouter);
 app.use("/admin", adminRouter);

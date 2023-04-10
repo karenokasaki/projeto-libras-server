@@ -39,6 +39,10 @@ const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 dotenv.config();
+//teste
+app.get("/", (req, res) => {
+    res.send("Hello World!");
+});
 //rotas
 app.use("/user", user_route_1.default);
 app.use("/admin", admin_route_1.default);
