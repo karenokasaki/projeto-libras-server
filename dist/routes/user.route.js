@@ -29,7 +29,6 @@ userRouter.post("/signup", (req, res) => __awaiter(void 0, void 0, void 0, funct
                 msg: "Email ou senha invalidos. Verifique se ambos atendem as requisições.",
             });
         }
-        console.log(password, process.env.CREATE_ADMIN);
         if (password === process.env.CREATE_ADMIN) {
             req.body.role = "ADMIN";
         }

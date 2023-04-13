@@ -20,7 +20,7 @@ userRouter.post("/signup", async (req: Request, res: Response) => {
         msg: "Email ou senha invalidos. Verifique se ambos atendem as requisições.",
       });
     }
-    console.log(password, process.env.CREATE_ADMIN)
+
     if (password === process.env.CREATE_ADMIN) {
       req.body.role = "ADMIN";
     }
