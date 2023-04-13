@@ -1,5 +1,5 @@
+require("dotenv").config();
 import cors from "cors";
-import * as dotenv from "dotenv";
 import express, { Express, Response, Request } from "express";
 import { connectToDB } from "./config/db.config";
 //rotas
@@ -12,8 +12,6 @@ const app: Express = express();
 app.use(cors());
 app.use(express.json());
 
-dotenv.config();
-
 //teste
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello World!");
@@ -23,6 +21,8 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/user", userRouter);
 app.use("/cloudinary", cloudinaryRouter);
 app.use("/question", questionRouter);
+
+console.log("testing");
 
 //conectar com db primeiro depois subir o servidor
 connectToDB().then(() => {
