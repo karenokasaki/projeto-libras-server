@@ -15,6 +15,8 @@ type UserDoc = Document & {
   profilePic: string;
   role: string;
   questions: QuestionModel["_id"][];
+  allowMedium: boolean;
+  allowHard: boolean;
 };
 
 type QuestionDoc = Document & {

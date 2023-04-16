@@ -29,6 +29,8 @@ const userSchema = new mongoose_1.default.Schema({
             ref: "Question",
         },
     ],
+    allowMedium: { type: Boolean, default: false },
+    allowHard: { type: Boolean, default: false },
 }, { timestamps: true });
 const UserModel = mongoose_1.default.model("User", userSchema);
 exports.default = UserModel;

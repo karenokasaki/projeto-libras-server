@@ -28,6 +28,9 @@ const userSchema = new mongoose.Schema<UserDoc>(
         ref: "Question",
       },
     ],
+
+    allowMedium: { type: Boolean, default: false },
+    allowHard: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
