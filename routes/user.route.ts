@@ -169,4 +169,72 @@ userRouter.delete(
   }
 );
 
+//add points
+userRouter.get(
+  "/add-points",
+  isAuth,
+  attachCurrentUser,
+  async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      if (!req.currentUser) {
+        return res
+
+          .status(401)
+          .json({ msg: "Usuário não autenticado.", ok: false });
+      }
+
+      const updatedUser = await UserModel.findByIdAndUpdate(
+        req.currentUser._id,
+        { $inc: { points: 1 } },
+        { new: true }
+      );
+
+      if (!updatedUser) {
+        return res
+          .status(404)
+          .json({ msg: "Usuário não encontrado.", ok: false });
+      }
+
+      return res.status(200).json(updatedUser);
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json(err);
+    }
+  }
+);
+
+//remove points
+userRouter.get(
+  "/remove-points",
+  isAuth,
+  attachCurrentUser,
+  async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      if (!req.currentUser) {
+        return res
+
+          .status(401)
+          .json({ msg: "Usuário não autenticado.", ok: false });
+      }
+
+      const updatedUser = await UserModel.findByIdAndUpdate(
+        req.currentUser._id,
+        { $inc: { points: -1 } },
+        { new: true }
+      );
+
+      if (!updatedUser) {
+        return res
+          .status(404)
+          .json({ msg: "Usuário não encontrado.", ok: false });
+      }
+
+      return res.status(200).json(updatedUser);
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json(err);
+    }
+  }
+);
+
 export default userRouter;

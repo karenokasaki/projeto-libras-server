@@ -138,4 +138,46 @@ userRouter.delete("/profile", isAuth_1.default, attachCurrentUser_1.default, (re
         return res.status(500).json(err);
     }
 }));
+//add points
+userRouter.get("/add-points", isAuth_1.default, attachCurrentUser_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (!req.currentUser) {
+            return res
+                .status(401)
+                .json({ msg: "Usuário não autenticado.", ok: false });
+        }
+        const updatedUser = yield user_model_1.default.findByIdAndUpdate(req.currentUser._id, { $inc: { points: 1 } }, { new: true });
+        if (!updatedUser) {
+            return res
+                .status(404)
+                .json({ msg: "Usuário não encontrado.", ok: false });
+        }
+        return res.status(200).json(updatedUser);
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(500).json(err);
+    }
+}));
+//remove points
+userRouter.get("/remove-points", isAuth_1.default, attachCurrentUser_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (!req.currentUser) {
+            return res
+                .status(401)
+                .json({ msg: "Usuário não autenticado.", ok: false });
+        }
+        const updatedUser = yield user_model_1.default.findByIdAndUpdate(req.currentUser._id, { $inc: { points: -1 } }, { new: true });
+        if (!updatedUser) {
+            return res
+                .status(404)
+                .json({ msg: "Usuário não encontrado.", ok: false });
+        }
+        return res.status(200).json(updatedUser);
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(500).json(err);
+    }
+}));
 exports.default = userRouter;
