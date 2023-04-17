@@ -43,7 +43,8 @@ const storage = new multer_storage_cloudinary_1.CloudinaryStorage({
     cloudinary: cloudinaryInst,
     params: {
         folder: "projeto-libras",
-        format: ["jpg", "png", "jpeg"],
+        format: ["jpg", "png"],
+        allowed_formats: ["jpg", "png"],
         use_filename: true,
     },
 });

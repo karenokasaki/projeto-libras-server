@@ -23,7 +23,7 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinaryInst,
   params: <Params>{
     folder: "projeto-libras",
-    format: ["jpg", "png", "jpeg"],
+    format: ["jpg", "png"],
     use_filename: true,
   },
 });
