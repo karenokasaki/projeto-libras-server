@@ -23,7 +23,11 @@ const questionSchema = new mongoose_1.default.Schema({
     options: [{ type: String }],
     answer: { type: String, required: true },
     attach: { type: String },
-    level: { type: String, required: true },
+    level: {
+        type: String,
+        required: true,
+        enum: ["fácil", "médio", "difícil"],
+    },
     createdBy: {
         type: mongoose_1.default.Schema.Types.ObjectId,
         ref: "Admin",

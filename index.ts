@@ -9,7 +9,7 @@ import questionRouter from "./routes/question.route";
 
 const app: Express = express();
 
-app.use(cors());
+app.use(cors({ credentials: true, origin: "*" }));
 app.use(express.json());
 
 //teste
