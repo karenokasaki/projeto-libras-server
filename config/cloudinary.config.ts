@@ -24,6 +24,8 @@ const storage = new CloudinaryStorage({
   params: <Params>{
     folder: "projeto-libras",
     format: ["jpg", "png"],
+    allowed_formats: ["jpg", "png"],
+
     use_filename: true,
   },
 });

@@ -8,8 +8,8 @@ cloudinary.post(
   uploadImg.single("picture"),
   (req: Request, res: Response) => {
     res.header("Access-Control-Allow-Origin", "*");
+    console.log(req);
     if (!req.file) {
-      console.log(req.file);
       return res.status(400).json({ msg: "Upload fail" });
     }
 
