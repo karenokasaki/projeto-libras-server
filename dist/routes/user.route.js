@@ -18,6 +18,7 @@ const isAuth_1 = __importDefault(require("../middlewares/isAuth"));
 const attachCurrentUser_1 = __importDefault(require("../middlewares/attachCurrentUser"));
 const user_model_1 = __importDefault(require("../models/user.model"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const log_model_1 = __importDefault(require("../models/log.model"));
 const SALT_ROUNDS = 10;
 const userRouter = express_1.default.Router();
 userRouter.post("/signup", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -139,7 +140,7 @@ userRouter.delete("/profile", isAuth_1.default, attachCurrentUser_1.default, (re
     }
 }));
 //add points
-userRouter.get("/add-points", isAuth_1.default, attachCurrentUser_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+userRouter.get("/add-points/:idQuestion", isAuth_1.default, attachCurrentUser_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (!req.currentUser) {
             return res
@@ -152,6 +153,13 @@ userRouter.get("/add-points", isAuth_1.default, attachCurrentUser_1.default, (re
                 .status(404)
                 .json({ msg: "Usuário não encontrado.", ok: false });
         }
+        //log
+        yield log_model_1.default.create({
+            user: req.currentUser._id,
+            points: updatedUser.points,
+            action: "acertou",
+            question: req.params.idQuestion,
+        });
         return res.status(200).json(updatedUser);
     }
     catch (err) {
@@ -160,7 +168,7 @@ userRouter.get("/add-points", isAuth_1.default, attachCurrentUser_1.default, (re
     }
 }));
 //remove points
-userRouter.get("/remove-points", isAuth_1.default, attachCurrentUser_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+userRouter.get("/remove-points/:idQuestion", isAuth_1.default, attachCurrentUser_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (!req.currentUser) {
             return res
@@ -173,7 +181,50 @@ userRouter.get("/remove-points", isAuth_1.default, attachCurrentUser_1.default, 
                 .status(404)
                 .json({ msg: "Usuário não encontrado.", ok: false });
         }
+        //log
+        yield log_model_1.default.create({
+            user: req.currentUser._id,
+            points: updatedUser.points,
+            action: "acertou",
+            question: req.params.idQuestion,
+        });
         return res.status(200).json(updatedUser);
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(500).json(err);
+    }
+}));
+//route to get all the questions the user answered correctly
+userRouter.get("/questions/correct", isAuth_1.default, attachCurrentUser_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (!req.currentUser) {
+            return res
+                .status(401)
+                .json({ msg: "Usuário não autenticado.", ok: false });
+        }
+        const logs = yield log_model_1.default.find({
+            $and: [{ user: req.currentUser._id }, { action: "acertou" }],
+        });
+        return res.status(200).json(logs);
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(500).json(err);
+    }
+}));
+//route to get all the questions the user answered incorrectly
+userRouter.get("/questions/incorrect", isAuth_1.default, attachCurrentUser_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (!req.currentUser) {
+            return res
+                .status(401)
+                .json({ msg: "Usuário não autenticado.", ok: false });
+        }
+        const logs = yield log_model_1.default.find({
+            $and: [{ user: req.currentUser._id }, { action: "errou" }],
+        });
+        return res.status(200).json(logs);
     }
     catch (err) {
         console.log(err);

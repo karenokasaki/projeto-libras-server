@@ -5,6 +5,7 @@ import attachCurrentUser from "../middlewares/attachCurrentUser";
 import UserModel from "../models/user.model";
 import bcrypt from "bcrypt";
 import { AuthenticatedRequest, UserDoc } from "../types";
+import LogModel from "../models/log.model";
 
 const SALT_ROUNDS = 10;
 
@@ -171,7 +172,7 @@ userRouter.delete(
 
 //add points
 userRouter.get(
-  "/add-points",
+  "/add-points/:idQuestion",
   isAuth,
   attachCurrentUser,
   async (req: AuthenticatedRequest, res: Response) => {
@@ -195,6 +196,14 @@ userRouter.get(
           .json({ msg: "Usuário não encontrado.", ok: false });
       }
 
+      //log
+      await LogModel.create({
+        user: req.currentUser._id,
+        points: updatedUser.points,
+        action: "acertou",
+        question: req.params.idQuestion,
+      });
+
       return res.status(200).json(updatedUser);
     } catch (err) {
       console.log(err);
@@ -205,7 +214,7 @@ userRouter.get(
 
 //remove points
 userRouter.get(
-  "/remove-points",
+  "/remove-points/:idQuestion",
   isAuth,
   attachCurrentUser,
   async (req: AuthenticatedRequest, res: Response) => {
@@ -229,7 +238,65 @@ userRouter.get(
           .json({ msg: "Usuário não encontrado.", ok: false });
       }
 
+      //log
+      await LogModel.create({
+        user: req.currentUser._id,
+        points: updatedUser.points,
+        action: "acertou",
+        question: req.params.idQuestion,
+      });
+
       return res.status(200).json(updatedUser);
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json(err);
+    }
+  }
+);
+
+//route to get all the questions the user answered correctly
+userRouter.get(
+  "/questions/correct",
+  isAuth,
+  attachCurrentUser,
+  async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      if (!req.currentUser) {
+        return res
+          .status(401)
+          .json({ msg: "Usuário não autenticado.", ok: false });
+      }
+
+      const logs = await LogModel.find({
+        $and: [{ user: req.currentUser._id }, { action: "acertou" }],
+      });
+
+      return res.status(200).json(logs);
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json(err);
+    }
+  }
+);
+
+//route to get all the questions the user answered incorrectly
+userRouter.get(
+  "/questions/incorrect",
+  isAuth,
+  attachCurrentUser,
+  async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      if (!req.currentUser) {
+        return res
+          .status(401)
+          .json({ msg: "Usuário não autenticado.", ok: false });
+      }
+
+      const logs = await LogModel.find({
+        $and: [{ user: req.currentUser._id }, { action: "errou" }],
+      });
+
+      return res.status(200).json(logs);
     } catch (err) {
       console.log(err);
       return res.status(500).json(err);
