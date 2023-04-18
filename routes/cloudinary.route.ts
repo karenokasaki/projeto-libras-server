@@ -5,10 +5,9 @@ const cloudinary = express.Router();
 
 cloudinary.post(
   "/",
-  uploadImg.single("picture"),
+  uploadImg.single("file"),
   (req: Request, res: Response) => {
     res.header("Access-Control-Allow-Origin", "*");
-    console.log(req);
     if (!req.file) {
       return res.status(400).json({ msg: "Upload fail" });
     }
