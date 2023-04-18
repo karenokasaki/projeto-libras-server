@@ -242,7 +242,7 @@ userRouter.get(
       await LogModel.create({
         user: req.currentUser._id,
         points: updatedUser.points,
-        action: "acertou",
+        action: "errou",
         question: req.params.idQuestion,
       });
 

@@ -185,7 +185,7 @@ userRouter.get("/remove-points/:idQuestion", isAuth_1.default, attachCurrentUser
         yield log_model_1.default.create({
             user: req.currentUser._id,
             points: updatedUser.points,
-            action: "acertou",
+            action: "errou",
             question: req.params.idQuestion,
         });
         return res.status(200).json(updatedUser);
