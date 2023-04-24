@@ -269,7 +269,7 @@ userRouter.get(
 
       const logs = await LogModel.find({
         $and: [{ user: req.currentUser._id }, { action: "acertou" }],
-      });
+      }).populate("question");
 
       return res.status(200).json(logs);
     } catch (err) {
@@ -294,7 +294,7 @@ userRouter.get(
 
       const logs = await LogModel.find({
         $and: [{ user: req.currentUser._id }, { action: "errou" }],
-      });
+      }).populate("question");
 
       return res.status(200).json(logs);
     } catch (err) {

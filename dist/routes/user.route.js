@@ -205,7 +205,7 @@ userRouter.get("/questions/correct", isAuth_1.default, attachCurrentUser_1.defau
         }
         const logs = yield log_model_1.default.find({
             $and: [{ user: req.currentUser._id }, { action: "acertou" }],
-        });
+        }).populate("question");
         return res.status(200).json(logs);
     }
     catch (err) {
@@ -223,7 +223,7 @@ userRouter.get("/questions/incorrect", isAuth_1.default, attachCurrentUser_1.def
         }
         const logs = yield log_model_1.default.find({
             $and: [{ user: req.currentUser._id }, { action: "errou" }],
-        });
+        }).populate("question");
         return res.status(200).json(logs);
     }
     catch (err) {

@@ -145,4 +145,25 @@ QuestionRouter.get(
   }
 );
 
+//get by category
+QuestionRouter.get(
+  "/get-by-category/:category",
+  isAuth,
+  attachCurrentUser,
+  async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const questions = await QuestionModel.find({
+        category: req.params.category,
+      });
+      if (!questions) {
+        return res.status(404).json({ msg: "Perguntas não encontradas" });
+      }
+      return res.status(200).json(questions);
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json(err);
+    }
+  }
+);
+
 export default QuestionRouter;

@@ -28,6 +28,7 @@ type QuestionDoc = Document & {
   attach?: string;
   level: string;
   createdBy: UserDoc["_id"];
+  category: string;
 };
 
 type AuthenticatedRequest = Request & {

@@ -113,4 +113,20 @@ QuestionRouter.get("/get-by-level/:level", isAuth_1.default, attachCurrentUser_1
         return res.status(500).json(err);
     }
 }));
+//get by category
+QuestionRouter.get("/get-by-category/:category", isAuth_1.default, attachCurrentUser_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const questions = yield question_model_1.default.find({
+            category: req.params.category,
+        });
+        if (!questions) {
+            return res.status(404).json({ msg: "Perguntas não encontradas" });
+        }
+        return res.status(200).json(questions);
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(500).json(err);
+    }
+}));
 exports.default = QuestionRouter;

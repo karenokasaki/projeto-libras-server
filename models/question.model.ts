@@ -26,6 +26,10 @@ const questionSchema = new mongoose.Schema<QuestionDoc>(
       required: true,
       enum: ["fácil", "médio", "difícil"],
     },
+    category: {
+      type: String,
+      required: true,
+    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Admin",
