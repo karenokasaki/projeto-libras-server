@@ -17,6 +17,8 @@ type UserDoc = Document & {
   questions: QuestionModel["_id"][];
   allowMedium: boolean;
   allowHard: boolean;
+  age: String;
+  surdo: Boolean;
 };
 
 type QuestionDoc = Document & {

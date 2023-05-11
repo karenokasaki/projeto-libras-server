@@ -31,6 +31,9 @@ const userSchema = new mongoose.Schema<UserDoc>(
 
     allowMedium: { type: Boolean, default: false },
     allowHard: { type: Boolean, default: false },
+
+    age: { type: String },
+    surdo: { type: Boolean },
   },
   { timestamps: true }
 );
