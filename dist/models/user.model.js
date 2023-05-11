@@ -33,6 +33,7 @@ const userSchema = new mongoose_1.default.Schema({
     allowHard: { type: Boolean, default: false },
     age: { type: String },
     surdo: { type: Boolean },
+    city: { type: String },
 }, { timestamps: true });
 const UserModel = mongoose_1.default.model("User", userSchema);
 exports.default = UserModel;

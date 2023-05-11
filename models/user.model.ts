@@ -34,6 +34,7 @@ const userSchema = new mongoose.Schema<UserDoc>(
 
     age: { type: String },
     surdo: { type: Boolean },
+    city: { type: String },
   },
   { timestamps: true }
 );

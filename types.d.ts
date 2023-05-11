@@ -19,6 +19,7 @@ type UserDoc = Document & {
   allowHard: boolean;
   age: String;
   surdo: Boolean;
+  city: String;
 };
 
 type QuestionDoc = Document & {
